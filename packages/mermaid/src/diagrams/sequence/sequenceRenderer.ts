@@ -383,16 +383,18 @@ const drawMessage = async function (diagram, msgModel, lineStartY: number, diagO
   textObj.textMargin = conf.wrapPadding;
   textObj.tspan = false;
 
+  const g = diagram.append('g');
+
   hasKatex(textObj.text)
-    ? await drawKatex(diagram, textObj, { startx, stopx, starty: lineStartY })
-    : drawText(diagram, textObj);
+    ? await drawKatex(g, textObj, { startx, stopx, starty: lineStartY })
+    : drawText(g, textObj);
 
   const textWidth = textDims.width;
 
   let line;
   if (startx === stopx) {
     if (conf.rightAngles) {
-      line = diagram
+      line = g
         .append('path')
         .attr(
           'd',
@@ -401,7 +403,7 @@ const drawMessage = async function (diagram, msgModel, lineStartY: number, diagO
           } V ${lineStartY + 25} H ${startx}`
         );
     } else {
-      line = diagram
+      line = g
         .append('path')
         .attr(
           'd',
@@ -424,7 +426,7 @@ const drawMessage = async function (diagram, msgModel, lineStartY: number, diagO
         );
     }
   } else {
-    line = diagram.append('line');
+    line = g.append('line');
     line.attr('x1', startx);
     line.attr('y1', lineStartY);
     line.attr('x2', stopx);
@@ -473,8 +475,7 @@ const drawMessage = async function (diagram, msgModel, lineStartY: number, diagO
   // add node number
   if (sequenceVisible || conf.showSequenceNumbers) {
     line.attr('marker-start', 'url(' + url + '#sequencenumber)');
-    diagram
-      .append('text')
+    g.append('text')
       .attr('x', startx)
       .attr('y', lineStartY + 4)
       .attr('font-family', 'sans-serif')
