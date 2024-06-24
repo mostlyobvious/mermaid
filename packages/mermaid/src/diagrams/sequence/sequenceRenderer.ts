@@ -1013,7 +1013,7 @@ export const draw = async function (_text: string, id: string, _version: string,
             createdActors,
             destroyedActors
           );
-          messagesToDraw.push({ messageModel: msgModel, lineStartY: lineStartY });
+          await drawMessage(diagram, msgModel, lineStartY, diagObj);
           bounds.models.addMessage(msgModel);
         } catch (e) {
           log.error('error while drawing message', e);
@@ -1042,9 +1042,6 @@ export const draw = async function (_text: string, id: string, _version: string,
   log.debug('destroyedActors', destroyedActors);
   await drawActors(diagram, actors, actorKeys, false);
 
-  for (const e of messagesToDraw) {
-    await drawMessage(diagram, e.messageModel, e.lineStartY, diagObj);
-  }
   if (conf.mirrorActors) {
     await drawActors(diagram, actors, actorKeys, true);
   }
